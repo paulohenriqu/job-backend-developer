@@ -1,22 +1,27 @@
-package com.intelipost.domain;
+package com.intelipost.auth.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.data.annotation.Id;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name="users")
+@Table(name="users", indexes = { @Index(name = "auth_index", columnList = "username, password")})
 public class User implements UserDetails {
     
     private static final long serialVersionUID = 1L;
@@ -30,7 +35,8 @@ public class User implements UserDetails {
     @NotNull
     private String password;
     
-    private List<String> roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles=new ArrayList<>();;
 
     public User() {
 
