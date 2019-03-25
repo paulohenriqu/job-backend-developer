@@ -38,9 +38,16 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles=new ArrayList<>();;
 
-    public User() {
+    public User(){
 
     }
+
+    public User(String username, String password, List<String> roles) {
+        this.username=username;
+        this.password=password;
+        this.roles=roles;
+    }
+    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -52,9 +59,17 @@ public class User implements UserDetails {
         return this.password;
     }
 
+    public void setPassword(String password){
+        this.password=password;
+    }
+
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    public void setUsername(String username){
+        this.username=username;
     }
 
     @Override
@@ -79,5 +94,9 @@ public class User implements UserDetails {
 
     public List<String> getRoles(){
         return this.roles;
+    }
+
+    public void setRoles(List<String> roles){
+        this.roles=roles;
     }
 }

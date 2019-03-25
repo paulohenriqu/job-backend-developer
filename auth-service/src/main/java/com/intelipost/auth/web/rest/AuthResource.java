@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,12 +34,18 @@ public class AuthResource {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody AuthUserDto user) {
+        
         try {
 
             authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));            
+                   
+            
             String token = tokenProvider.createToken(user.getUsername(),
                     this.userRepository.findByUsername(user.getUsername())
                             .orElseThrow(
@@ -53,8 +60,10 @@ public class AuthResource {
 
             return ResponseEntity.ok().headers(headers).body(model);           
 
-        } catch (AuthenticationException ex) {
+        } catch (AuthenticationException ex) {            
             throw new BadCredentialsException("Usuário ou senha inválidos");
-        }        
+        }     
+        
+        
     }
 }
