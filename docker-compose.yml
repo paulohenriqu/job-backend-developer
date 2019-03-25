@@ -17,7 +17,7 @@ services:
          ports:
             - 8080:8080
     profile-service:
-         build: client/.
+         build: profile-service/.
          depends_on:
             - gateway
          ports:

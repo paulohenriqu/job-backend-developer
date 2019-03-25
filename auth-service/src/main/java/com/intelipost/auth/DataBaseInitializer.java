@@ -27,11 +27,11 @@ public class DataBaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        /*
+        
         logger.info("Initializing sample user");
         User user = new User("admin", this.passwordEncoder.encode("password"), Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
         this.userRepository.save(user);
-        */
+        
 
     }
 }

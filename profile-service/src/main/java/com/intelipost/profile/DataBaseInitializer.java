@@ -25,14 +25,14 @@ public class DataBaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        /*
+        
         logger.info("Initializing sample profile");
        
         LocalDate birthday = LocalDate.of(1992, 9, 19);
 
         Profile profile=new Profile(1l, "paulohenriqu@hotmail.com", "Paulo", "de Siqueira","http://phsiqueira.com/wp-content/uploads/2018/08/profile-wp.png", birthday);
         this.profileRepository.save(profile);
-        */
+        
 
     }
 }
