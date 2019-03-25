@@ -1,57 +1,100 @@
-# Intelipost: Teste prático para Backend Developer
+#  Intelipost: Teste prático para Backend Developer
+**Paulo Henrique de Siqueira**
+paulohenriqu@hotmail.com
+https://www.linkedin.com/in/paulohenriquesiqueira/
 
-Este é o teste usado por nós aqui da [Intelipost](http://www.intelipost.com.br) para avaliar tecnicamente os candidatos a nossas vagas de Backend. Se você estiver participando de um processo seletivo para nossa equipe, certamente em algum momento receberá este link, mas caso você tenha chego aqui "por acaso", sinta-se convidado a desenvolver nosso teste e enviar uma mensagem para nós no e-mail `techtests@intelipost.com.br`.
+# Solução
+Considerando o desafio apresentado pensei em dividir os serviços de autenticação e perfil de usuário em microsserviços.
+Também implementei o método de autenticação utilizando JWT.  A autenticação via tokens é stateless, sendo assim é possível escalar os servidores sem preocupação com perca de sessão.
+Com a utilização de microsserviços e JWT seria possível utilizar um load balancer, sempre que houver um pico de requisições os servidores podem ser escalados, possivelmente resolvendo um dos problemas de lentidão pelo fato de o servidor não conseguir processar uma quantidade extremamente grande de requisições http simultâneamente. Caso também haja gargalo na conexão com o banco de dados é possível utilizar um cluster em conjunto com o microsserviço de autenticação.
+Foi desenvolvido um microsserviço chamado gateway, que serve como autenticação e gateway para os outros microsserviços, realizando também o redirecionamento utilizando Spring Cloud (Eureka e Zuul).
+O segundo microsserviço gerencia os perfis cadastrados no sistema.
+Também considerando a grande quantidade de usuários cadastrados no banco foi criado um índice na coluna username para agilizar a query de autenticação e um índice na coluna user_id da tabela profile para que os perfis sejam carregados de forma mais rápida também. 
 
-Aqui na Intelipost nós aplicamos este mesmo teste para as vagas em todos os níveis, ou seja, um candidato a uma vaga de backend júnior fará o mesmo teste de um outro candidato a uma vaga de backend sênior, mudando obviamente o nosso critério de avaliação do resultado do teste. 
+# Tecnologias utilizadas
+As seguintes tecnologias foram utilizadas nesta solução:
+* Java 8
+* Spring Boot
+* Maven
+* PostgreSQL
+* Docker
+# Dependências
+Para rodar esse projeto as seguintes dependências precisam estar instaladas no computador:
+* Git (https://git-scm.com/book/pt-br/v1/Primeiros-passos-Instalando-Git)
+* JDK 8 (https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html)
+* Maven (https://maven.apache.org/install.html)
+* Docker (https://docs.docker.com/install/)
+# Executando o projeto
+* Clone este repositório
+* Construa o projeto do gateway utilizando o Manven:
 
-Nós fazemos isso esperando que as pessoas mais iniciantes entendam qual o modelo de profissional que temos por aqui e que buscamos para o nosso time. Portanto, se você estiver se candidatando a uma vaga mais iniciante, não se assuste, e faça o melhor que você puder!
+   ```bash
+ cd auth-service
+ mvn clean install -DskipTests
+```
 
-## Instruções
+* Construa o projeto do profile-service com o Maven:
 
-Você deverá criar um `fork` deste projeto, e desenvolver em cima do seu fork. Use o *README* principal do seu repositório para nos contar como foi resolver seu teste, as decisões tomadas, como você organizou e separou seu código, e principalmente as instruções de como rodar seu projeto, afinal a primeira pessoa que irá rodar seu projeto será um programador frontend de nossa equipe, e se você conseguir explicar para ele como fazer isso, você já começou bem!
+   ```bash
+ cd ..
+ cd profile-service
+ mvn clean install -DskipTests
+```
+* Volte para a pasta raíz do repositório e inicie os containers do docker
 
-Lembre-se que este é um teste técnico e não um concurso público, portanto, não existe apenas uma resposta correta. Mostre que você é bom e nos impressione, mas não esqueça do objetivo do projeto. 
+   ```bash
+ cd ..
+ docker-compose up
+```
+* O container do gateway aguarda 20 segundos para que o PostgreSQL termine de iniciar.
+* A API de autenticação está no endpoint **localhost:8080/auth/login**. A aplicação é iniciada com um usuário de testes:
+Username: admin 
+Password: passowrd
+Então para gerar o token é necessário fazer a requisição POST passando os dados do usuário no corpo da requisição:
 
-Nós não definimos um tempo limite para resolução deste teste, o que vale para nós e o resultado final e a evolução da criação do projeto até se atingir este resultado, mas acreditamos que este desafio pode ser resolvido em cerca de 16 horas de codificação.
+   
 
-## Um pouco sobre a Intelipost
+     curl -X POST \
+      http://localhost:8080/auth/login \
+      -H 'cache-control: no-cache' \
+      -H 'content-type: application/json' \ 
+      -d '{
+    	"username":"admin",
+    	"password":"password"
+    }'
 
-A Intelipost é uma startup de tecnologia que está revolucionando a logística no Brasil, um mercado de R$ 300B por ano com muitas ineficiências e desafios. Temos um sistema inovador que gerencia a logística para empresas do e-commerce. Já recebemos R$11 milhões de investimento até o momento, e em pouquissimo tempo já estamos colhendo grandes resultados: Em 2016 fomos selecionados como uma empresa [Promessas Endeavor](https://ecommercenews.com.br/noticias/parcerias-comerciais/intelipost-e-selecionada-pelo-promessas-endeavor/), também [ganhamos a competição IBM Smartcamp](https://www.ibm.com/blogs/robertoa/2016/11/intelipost-e-nazar-vencem-o-ibm-smartcamp-brasil-2016/), com foco de Big Data e data analysis, o que nos rendeu a [realização de um Hackathon sobre Blockchain junto a IBM](https://www.ibm.com/blogs/robertoa/2017/09/intelipost-e-ibm-realizam-o-primeiro-hackathon-de-blockchain-em-startup-do-brasil/), e em 2017 [fomos selecionados pela Oracle para sermos acelerados por eles no programa Oracle Startup Cloud Accelerator](https://www.oracle.com/br/corporate/pressrelease/oracle-anuncia-startups-selecionadas-programa-oracle-startup-cloud-accelerator-sao-paulo-20170804.html).
+O token JWT será retornado no corpo da reposta.
 
-Tecnicamente, o nosso maior desafio hoje é estar preparado para atender a todos os nossos clientes, que além de muitos, são grandes em número de requisições (Americanas, Submarino, Shoptime, Lojas Renner, Boticário, Livraria Cultura, Magazine Luize, etc), totalizando mais de meio bilhão de requisições por mês.
+[![auth.png](https://i.postimg.cc/Fzzyq8DY/auth.png)](https://postimg.cc/1VxVVCxS)
 
-Para isso, organizamos nosso sistema em micro serviços na AWS com Docker e Kubernetes, utilizando Java 8, Spring 4 (principalmente spring-boot), PostgreSQL, ElasticSearch e Redis. Temos um frontend para acesso dos clientes desenvolvido Vue.JS e mobile apps utilizando o framework Ionic.
+* Para pegar mais informações sobre a conta do usuário logado o endpoint à ser utilizado é o **localhost:8080/auth/account-info**, passando no header da requisição GET o token na key authorization:
 
-## O desafio
+        curl -X GET \
+      http://localhost:8080/auth/account-info \
+      -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
+      -H 'cache-control: no-cache' 
 
-Como você pode ver, nosso maior desafio está na manutenção e otimização de aplicações que estejam prontas para atender um altíssimo volume de dados e transações, por este motivo, todos os membros da nossa equipe estão altamente comprometidos com estes objetivos, de robustez, escalabilidade e performance, e é exatamente isso que esperamos de você através da resolução destes dois desafios:
 
-1) Imagine que hoje tenhamos um sistema de login e perfis de usuários. O sistema conta com mais de 10 milhões de usuários, sendo que temos um acesso concorrente de cerca de 5 mil usuários. Hoje a tela inicial do sistema se encontra muito lenta. Nessa tela é feita uma consulta no banco de dados para pegar as informações do usuário e exibi-las de forma personalizada. Quando há um pico de logins simultâneos, o carregamento desta tela fica demasiadamente lento. Na sua visão, como poderíamos iniciar a busca pelo problema, e que tipo de melhoria poderia ser feita?
+[![account-info.png](https://i.postimg.cc/MHL785Fd/account-info.png)](https://postimg.cc/tnhZ33yx)
 
-2) Com base no problema anterior, gostaríamos que você codificasse um novo sistema de login para muitos usuários simultâneos e carregamento da tela inicial. Lembre-se que é um sistema web então teremos conteúdo estático e dinâmico. Leve em consideração também que na empresa existe um outro sistema que também requisitará os dados dos usuários, portanto, este sistema deve expor as informações para este outro sistema de alguma maneira.
+* Para buscar os perfis no serviço profile o endpoint à ser utilizado é **localhost:8080/api/profile/v1/profile**. 
 
-### O que nós esperamos do seu teste
+ 
 
-* O código deverá ser hospedado em algum repositório público. Diversos quesitos serão avaliados aqui, como organização do código, sequencialidade de commits, nomeação de classes e métodos, etc.
-* O código deverá estar pronto para ser executado e testado, portanto, caso exista algum requisito, este deve estar completamente documentado no README do seu projeto.
-* Esperamos também alguma explicação sobre a solução, que pode ser em comentários no código, um texto escrito ou até um vídeo narrativo explicando a abordagem utilizada. 
-* Você deverá utilizar a nossa stack de tecnologias descritas no início deste documento (Java 8 + Spring boot + Spring MVC).
+    curl -X GET \
+      http://localhost:8080/api/profile/v1/profile \
+      -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
+      -H 'cache-control: no-cache' 
 
-### O que nós ficaríamos felizes de ver em seu teste
+* Para buscar um perfil específico o endpoint é **localhost:8080/api/profile/v1/profile/:id**
 
-* Testes
-* Processo de build e deploy documentado
-* Ver o código rodando live (em qualquer serviço por aí)
+    curl -X GET \
+      http://localhost:8080/api/profile/v1/profile/1 \
+      -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
+      -H 'cache-control: no-cache'
+* Para buscar um perfil pelo id de um usuário o endpoint é **localhost:8080/api/profile/v1/profile/user/:id**
 
-### O que nós não gostaríamos
-
-* Descobrir que não foi você quem fez seu teste
-* Ver commits grandes, sem muita explicação nas mensagens em seu repositório 
-
-## O que avaliaremos de seu teste
-
-* Histórico de commits do git
-* As instruções de como rodar o projeto
-* Organização, semântica, estrutura, legibilidade, manutenibilidade do seu código
-* Alcance dos objetivos propostos
-* Escalabilidade da solução adotada 
+    curl -X GET \
+      http://localhost:8080/api/profile/v1/profile/user/1 \
+      -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
+      -H 'cache-control: no-cache'
