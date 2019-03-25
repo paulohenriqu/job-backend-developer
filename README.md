@@ -1,6 +1,8 @@
 #  Intelipost: Teste prático para Backend Developer
 **Paulo Henrique de Siqueira**
+
 paulohenriqu@hotmail.com
+
 https://www.linkedin.com/in/paulohenriquesiqueira/
 
 # Solução
@@ -28,21 +30,22 @@ Para rodar esse projeto as seguintes dependências precisam estar instaladas no 
 * Clone este repositório
 * Construa o projeto do gateway utilizando o Manven:
 
-   ```bash
+```bash
  cd auth-service
  mvn clean install -DskipTests
 ```
 
 * Construa o projeto do profile-service com o Maven:
 
-   ```bash
+```bash
  cd ..
  cd profile-service
  mvn clean install -DskipTests
 ```
+
 * Volte para a pasta raíz do repositório e inicie os containers do docker
 
-   ```bash
+```bash
  cd ..
  docker-compose up
 ```
@@ -51,9 +54,7 @@ Para rodar esse projeto as seguintes dependências precisam estar instaladas no 
 Username: admin 
 Password: passowrd
 Então para gerar o token é necessário fazer a requisição POST passando os dados do usuário no corpo da requisição:
-
-   
-
+```   
      curl -X POST \
       http://localhost:8080/auth/login \
       -H 'cache-control: no-cache' \
@@ -62,39 +63,42 @@ Então para gerar o token é necessário fazer a requisição POST passando os d
     	"username":"admin",
     	"password":"password"
     }'
+```    
 
 O token JWT será retornado no corpo da reposta.
 
 [![auth.png](https://i.postimg.cc/Fzzyq8DY/auth.png)](https://postimg.cc/1VxVVCxS)
 
 * Para pegar mais informações sobre a conta do usuário logado o endpoint à ser utilizado é o **localhost:8080/auth/account-info**, passando no header da requisição GET o token na key authorization:
-
+```
         curl -X GET \
       http://localhost:8080/auth/account-info \
       -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
       -H 'cache-control: no-cache' 
-
+```
 
 [![account-info.png](https://i.postimg.cc/MHL785Fd/account-info.png)](https://postimg.cc/tnhZ33yx)
 
 * Para buscar os perfis no serviço profile o endpoint à ser utilizado é **localhost:8080/api/profile/v1/profile**. 
 
  
-
+```
     curl -X GET \
       http://localhost:8080/api/profile/v1/profile \
       -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
       -H 'cache-control: no-cache' 
-
+```
 * Para buscar um perfil específico o endpoint é **localhost:8080/api/profile/v1/profile/:id**
-
+```
     curl -X GET \
       http://localhost:8080/api/profile/v1/profile/1 \
       -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
       -H 'cache-control: no-cache'
+```      
 * Para buscar um perfil pelo id de um usuário o endpoint é **localhost:8080/api/profile/v1/profile/user/:id**
-
+```
     curl -X GET \
       http://localhost:8080/api/profile/v1/profile/user/1 \
       -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
       -H 'cache-control: no-cache'
+```      
