@@ -78,6 +78,20 @@ public class ProfileResource {
         }       
     }
 
+    @GetMapping("/profile/user/{id}")
+    public ResponseEntity<Profile> getUserProfile(@PathVariable Long userId) {
+       
+        Optional<Profile> profile = profileRepository.findByuserId(userId);
+
+        HttpHeaders headers = new HttpHeaders();
+
+        if(profile.isPresent()){            
+            return ResponseEntity.ok().headers(headers).body(profile.get());
+        }else{
+            return ResponseEntity.notFound().headers(headers).build();
+        }       
+    }
+
     
     @DeleteMapping("/profile/{id}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
