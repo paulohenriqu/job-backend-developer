@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.intelipost.auth.domain.User;
 import com.intelipost.auth.repository.UserRepository;
 import com.intelipost.auth.security.TokenProvider;
 import com.intelipost.auth.service.dto.AuthUserDto;
@@ -58,7 +59,7 @@ public class AuthResource {
 
             Map<Object, Object> model = new HashMap<>();
             model.put("username", user.getUsername());
-            model.put("token", token);
+            model.put("token", token);            
 
             HttpHeaders headers = new HttpHeaders();
 
@@ -71,10 +72,10 @@ public class AuthResource {
     }
 
     @GetMapping("/account-info")
-    public ResponseEntity loggedUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity loggedUser(@AuthenticationPrincipal User userDetails) {
         Map<Object, Object> result = new HashMap<>();
-        result.put("username", userDetails.getUsername());
-
+        result.put("username", userDetails.getUsername());   
+        result.put("id", userDetails.getId());   
         result.put("roles", userDetails.getAuthorities().stream().map(a -> ((GrantedAuthority) a).getAuthority())
                 .collect(Collectors.toList()));
 

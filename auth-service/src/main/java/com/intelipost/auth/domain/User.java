@@ -47,6 +47,10 @@ public class User implements UserDetails {
         this.password=password;
         this.roles=roles;
     }
+
+    public Long getId(){
+        return this.id;
+    }
     
 
     @Override
