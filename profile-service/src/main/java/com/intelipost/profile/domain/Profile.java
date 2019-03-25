@@ -30,6 +30,23 @@ public class Profile implements Serializable{
 
     }
 
+    public Profile(Long userId, String email, String name, String surname, String photoUrl, LocalDate birthday){
+        this.userId=userId;
+        this.email=email;
+        this.name=name;
+        this.surname=surname;
+        this.photoUrl=photoUrl;
+        this.birthday=birthday;
+    }
+
+     /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+
     /**
      * @return the birthday
      */
