@@ -12,15 +12,14 @@ public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository){
-        this.userRepository=userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.userRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException(username + "not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(username + "not found"));
     }
-
 
 }

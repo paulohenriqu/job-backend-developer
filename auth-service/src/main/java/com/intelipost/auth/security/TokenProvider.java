@@ -54,7 +54,7 @@ public class TokenProvider{
     }
 
     public Authentication getAuthentication(String token){
-        UserDetails userDetails=this.userService.loadUserByUsername(token);
+        UserDetails userDetails=this.userService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

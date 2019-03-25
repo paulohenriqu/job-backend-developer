@@ -22,9 +22,10 @@ public class TokenFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+            throws IOException, ServletException {               
 
-        String token = tokenProvider.resolveToken((HttpServletRequest) request);
+        String token = tokenProvider.resolveToken((HttpServletRequest) request);                
+
         if (token != null && tokenProvider.validateToken(token)) {
             Authentication auth = token != null ? tokenProvider.getAuthentication(token) : null;
             SecurityContextHolder.getContext().setAuthentication(auth);
