@@ -78,7 +78,8 @@ public class ProfileResource {
         }       
     }
 
-    @GetMapping("/profile/user/{id}")
+    
+    @GetMapping("/profile/user/{userId}")
     public ResponseEntity<Profile> getUserProfile(@PathVariable Long userId) {
        
         Optional<Profile> profile = profileRepository.findByuserId(userId);
