@@ -41,7 +41,7 @@ public class DataBaseInitializer implements CommandLineRunner {
 
             Profile profile2 = new Profile(2l, "siqueira.pauloh@gmail.com", "Henrique", "de Siqueira",
                     "http://phsiqueira.com/wp-content/uploads/2018/08/profile-wp.png", birthday);
-            this.profileRepository.save(profile);
+            this.profileRepository.save(profile2);
         }
 
     }
