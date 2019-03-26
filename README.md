@@ -102,3 +102,30 @@ O token JWT será retornado no corpo da reposta.
       -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTM2MTkwLCJleHAiOjE1NTM1Mzk3OTB9.DY8PaP2X9Q3SakSF4IjAXg98kXK20NoJjyYweD3Xb2M' \
       -H 'cache-control: no-cache'
 ```      
+# Demo
+O projeto está disponível para testes no Heroku na url https://ph-intelipost.herokuapp.com/
+Para testar basta fazer as seguintes requisições:
+```
+curl -X POST \
+  https://ph-intelipost.herokuapp.com/auth/login \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -d '{
+	"username":"admin",
+	"password":"password"
+}'
+```
+No resultado da requisição pegue o token retornado e coloque no header:
+```
+curl -X GET \
+  https://ph-intelipost.herokuapp.com/auth/account-info \
+  -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTY0NDIwLCJleHAiOjE1NTM1NjgwMjB9.0WPyM8CQLTWK3-NGfc8qalRhLkV0KKr9-NP7Rurx3CU' \
+  -H 'cache-control: no-cache'
+  ```
+  Para acessar o endpoint dos perfis:
+  ```
+  curl -X GET \
+  https://ph-intelipost.herokuapp.com/api/profile/v1/profile/ \
+  -H 'authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNTUzNTY0NDIwLCJleHAiOjE1NTM1NjgwMjB9.0WPyM8CQLTWK3-NGfc8qalRhLkV0KKr9-NP7Rurx3CU' \
+  -H 'cache-control: no-cache' 
+  ```
